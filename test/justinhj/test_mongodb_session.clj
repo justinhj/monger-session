@@ -1,11 +1,11 @@
-(ns kremers.test-mongodb-session
+(ns justinhj.test-mongodb-session
   (:use [clojure.test]
 	[ring.middleware.session.store]
-	[kremers.monger-session]
-        [monger.core :only [command connect! connect set-db! get-db]]
-))
+	[justinhj.monger-session]
+        [monger.core :only [command connect! connect set-db! get-db]]))
 
 (def dbname "test-mongodb-sessions")
+
 (defn connect-to-db! [] (connect!) (monger.core/set-db! (monger.core/get-db dbname)))
 
 (defn server-fixture [f] 
@@ -27,7 +27,7 @@
 	entity   (read-session store sess-key)]
     (is (not (nil? sess-key)))
     (is (:_id entity))
-    (is (= (dissoc entity :_id)
+    (is (= (dissoc entity :_id :time_created)
 	   {:foo "bar"}))))
 
 (deftest session-update
@@ -37,7 +37,7 @@
 	entity    (read-session store sess-key*)]
     (is (= sess-key sess-key*))
     (is (:_id entity))
-    (is (= (dissoc entity :_id)
+    (is (= (dissoc entity :_id :time_created)
 	   {:bar "baz"}))))
 
 (deftest session-auto-key-change
@@ -47,7 +47,7 @@
 	entity    (read-session store sess-key*)]
     (is (not= sess-key sess-key*))
     (is (:_id entity))
-    (is (= (dissoc entity :_id)
+    (is (= (dissoc entity :_id :time_created)
 	   {:bar "baz"}))))
 
 (deftest session-delete
