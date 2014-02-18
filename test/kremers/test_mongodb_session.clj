@@ -26,8 +26,8 @@
 	sess-key (write-session store nil {:foo "bar"})
 	entity   (read-session store sess-key)]
     (is (not (nil? sess-key)))
-    (is (and (:_id entity) (:_date entity)))
-    (is (= (dissoc entity :_id :_date)
+    (is (:_id entity))
+    (is (= (dissoc entity :_id)
 	   {:foo "bar"}))))
 
 (deftest session-update
@@ -37,7 +37,7 @@
 	entity    (read-session store sess-key*)]
     (is (= sess-key sess-key*))
     (is (:_id entity))
-    (is (= (dissoc entity :_id :_date)
+    (is (= (dissoc entity :_id)
 	   {:bar "baz"}))))
 
 (deftest session-auto-key-change
@@ -47,8 +47,7 @@
 	entity    (read-session store sess-key*)]
     (is (not= sess-key sess-key*))
     (is (:_id entity))
-    ;(:_date entity)
-    (is (= (dissoc entity :_id :_date)
+    (is (= (dissoc entity :_id)
 	   {:bar "baz"}))))
 
 (deftest session-delete
